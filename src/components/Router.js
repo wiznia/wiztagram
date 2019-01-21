@@ -9,7 +9,7 @@ const Router = () => (
       <h2 className="title">Wiztagram</h2>
       <Switch>
         <Route path="/profile/:profileId" component={Profile} />
-        <Route exact path="/app" component={App} />
+        <Route exact path="/" component={App} />
       </Switch>
     </div>
   </BrowserRouter>
