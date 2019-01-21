@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import firebase from 'firebase';
 import base, { firebaseApp } from './base';
 import './App.scss';
 import samplePhotos from './sample-photos';
 import Post from './components/Post';
 import Modals from './components/Modals';
+import Profile from './components/Profile';
 
 class App extends Component {
   fullName = React.createRef();
@@ -22,10 +24,6 @@ class App extends Component {
     signupPopup: false,
     loginPopup: false,
     resetPasswordPopup: false
-  }
-
-  goToProfile = () => {
-    this.props.history.push({pathname:`/profile/${this.state.app.uid}`});
   }
 
   addComment = (comment, key, username) => {
@@ -63,9 +61,11 @@ class App extends Component {
     const fullName = authData.user.displayName || this.fullName.current.value;
     const login = await base.fetch('/', { context: this });
 
+    // Sends email verification for new users only
     if (authData.additionalUserInfo.isNewUser) {
       authData.user.sendEmailVerification().then(() => {
         this.setState({
+          error: null,
           info: 'We sent you an email to confirm your account.'
         });
 
@@ -77,6 +77,7 @@ class App extends Component {
       });
     }
     
+    // Sets the username provided by the user on the sign in popup
     if (authData.operationType === 'signIn') {
       authData.user.updateProfile({
         displayName: fullName
@@ -89,6 +90,7 @@ class App extends Component {
       });
     }
 
+    // If no owner was found, claim the app ownership and post it to Firebase
     if (!login.app.owner) {
       await base.post('/app/owner', {
         data: authData.user.uid
@@ -112,7 +114,7 @@ class App extends Component {
       });
     }).catch(err => {
       this.setState({
-        error: err.message 
+        error: err.message
       });
     });
   }
@@ -130,6 +132,7 @@ class App extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    // New users
     if (this.signupEmail.current || this.signupPassword.current !== null) {
       const email = this.signupEmail.current.value;
       const password = this.signupPassword.current.value;
@@ -137,6 +140,7 @@ class App extends Component {
       this.authenticate(email, password, 'createUserWithEmailAndPassword');
     }
     
+    // Already registered users
     if (this.loginEmail.current || this.loginPassword.current !== null) {
       const email = this.loginEmail.current.value;
       const password = this.loginPassword.current.value;
@@ -180,6 +184,7 @@ class App extends Component {
     e.preventDefault();
     firebase.auth().sendPasswordResetEmail(email).then(() => {
       this.setState({
+        error: null,
         info: "A password reset email has been sent to the address provided."
       });
     }).catch((error) => {
@@ -190,6 +195,12 @@ class App extends Component {
   }
 
   showModal = (method) => {
+    // Hide all errors when closing the popup
+    if (this.state.signupPopup === false || this.state.loginPopup === false) {
+      this.setState({
+        error: null
+      });
+    }
     this.setState({
       [method]: !this.state[method]
     });
@@ -207,27 +218,39 @@ class App extends Component {
   }
   
   render() {
+    const profileId = this.state.app ? this.state.app.uid : '';
     return (
-      <React.Fragment>
-        { !this.state.app.uid ? (
-          <React.Fragment>
-            <button className="button" onClick={() => this.showModal('signupPopup')}>Sign up</button>
-            <button className="button" onClick={() => this.showModal('loginPopup')}>Login</button>
-          </React.Fragment>
-          ) : (
-          <React.Fragment>
-            <span className="username"><span className="button" onClick={this.goToProfile}>My account</span></span>
-            <button className="button" onClick={this.logout}>Logout</button>
-          </React.Fragment>
-          )
-        }
-        <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} />
-        <ul className="photo-stream">
-          {
-            Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />)
-          }
-        </ul>
-      </React.Fragment>
+      <BrowserRouter>
+        <div className="wiztagram">
+          <h2 className="title">Wiztagram</h2>
+          <Switch>
+            <Route exact path="/">
+              <React.Fragment>
+                { !this.state.app.uid ? (
+                  <React.Fragment>
+                    <button className="button" onClick={() => this.showModal('signupPopup')}>Sign up</button>
+                    <button className="button" onClick={() => this.showModal('loginPopup')}>Login</button>
+                  </React.Fragment>
+                  ) : (
+                  <React.Fragment>
+                    <Link to={`/profile/${profileId}`}><span className="username"><span className="button">My account</span></span></Link>
+                    <button className="button" onClick={this.logout}>Logout</button>
+                  </React.Fragment>
+                  )
+                }
+                <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} />
+                <ul className="photo-stream">
+                  {
+                    Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />)
+                  }
+                </ul>
+              </React.Fragment>
+            </Route>
+            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state}} />}>
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }
