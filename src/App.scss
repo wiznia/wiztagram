@@ -1,0 +1,184 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+    font-family: 'Billabong';
+    src: url('fonts/Billabong.eot');
+    src: url('fonts/Billabong.eot') format('embedded-opentype'),
+         url('fonts/Billabong.woff2') format('woff2'),
+         url('fonts/Billabong.woff') format('woff'),
+         url('fonts/Billabong.ttf') format('truetype'),
+         url('fonts/Billabong.svg#Billabong') format('svg');
+}
+
+
+li {
+  list-style-type: none;
+}
+
+img {
+  width: 100%;
+}
+
+.wiztagram {
+  margin: 20px auto;
+  padding: 0 20px;
+  max-width: 500px;
+}
+
+.title {
+  font: 60px/1 Billabong, sans-serif;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.button {
+  border: 0;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+.error, .info {
+  font-size: 12px;
+  font-weight: bold;
+  color: #bf0000;
+  margin-top: 10px;
+}
+
+.info {
+  color: #48b148;
+}
+
+.input {
+  border: 1px solid rgba(0, 0, 0, .3);
+  width: 100%;
+  padding: 14px 7px;
+  margin-bottom: 14px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &::before {
+    background: rgba(0, 0, 0, .7);
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.modal__inner {
+  background-color: #fff;
+  position: relative;
+  padding: 20px 30px;
+  width: 80%;
+  @media screen and (min-width: 768px) {
+    width: 400px;
+  }
+}
+
+.button-modal {
+  border: 1px solid #b7b7b7;
+  display: block;
+  padding: 14px 18px;
+  margin-top: 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close-modal {
+  position: absolute;
+  top: 5px;
+  right: 30px;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.username {
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.like {
+  path {
+    transition: fill 300ms ease;
+  }
+}
+.like_active {
+  path {
+    fill: #ff0000;
+  }
+}
+
+.photo-stream {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 1fr);
+  grid-gap: 30px;
+  margin-top: 20px;
+}
+
+.photo-stream__description {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.photo-stream__bar {
+  margin-top: 10px;
+}
+
+.photo-stream__comment, .photo-stream__like {
+  border: 0;
+  margin: 0 12px 10px 0;
+  cursor: pointer;
+}
+
+.photo-stream__comment-box {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  padding: 7px 0;
+}
+
+.comments {
+  margin-top: 10px;
+}
+
+.photo-stream__new-comment {
+  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.photo-stream__new-comment-by {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+.photo-stream__new-comment-text {
+  flex-basis: 100%;
+}
