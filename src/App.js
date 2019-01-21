@@ -222,29 +222,29 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="wiztagram">
-          <h2 className="title">Wiztagram</h2>
+          <header className="wiztagram__header">
+            <Link to="/"><h2 className="title">Wiztagram</h2></Link>
+            { !this.state.app.uid ? (
+              <React.Fragment>
+                <button className="button" onClick={() => this.showModal('signupPopup')}>Sign up</button>
+                <button className="button" onClick={() => this.showModal('loginPopup')}>Login</button>
+              </React.Fragment>
+              ) : (
+              <React.Fragment>
+                <Link to={`/profile/${profileId}`}><span className="username"><span className="button">My account</span></span></Link>
+                <button className="button" onClick={this.logout}>Logout</button>
+              </React.Fragment>
+              )
+            }
+            <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} />
+          </header>
           <Switch>
             <Route exact path="/">
-              <React.Fragment>
-                { !this.state.app.uid ? (
-                  <React.Fragment>
-                    <button className="button" onClick={() => this.showModal('signupPopup')}>Sign up</button>
-                    <button className="button" onClick={() => this.showModal('loginPopup')}>Login</button>
-                  </React.Fragment>
-                  ) : (
-                  <React.Fragment>
-                    <Link to={`/profile/${profileId}`}><span className="username"><span className="button">My account</span></span></Link>
-                    <button className="button" onClick={this.logout}>Logout</button>
-                  </React.Fragment>
-                  )
+              <ul className="photo-stream">
+                {
+                  Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />)
                 }
-                <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} />
-                <ul className="photo-stream">
-                  {
-                    Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />)
-                  }
-                </ul>
-              </React.Fragment>
+              </ul>
             </Route>
             <Route path="/profile/:profileId" render={() => <Profile state={{...this.state}} />}>
             </Route>

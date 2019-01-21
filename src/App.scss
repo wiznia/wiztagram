@@ -16,6 +16,9 @@
          url('fonts/Billabong.svg#Billabong') format('svg');
 }
 
+a {
+  text-decoration: none;
+}
 
 li {
   list-style-type: none;
@@ -33,6 +36,7 @@ img {
 
 .title {
   font: 60px/1 Billabong, sans-serif;
+  color: #000;
   text-align: center;
   margin-bottom: 50px;
 }
@@ -133,6 +137,10 @@ form {
   }
 }
 
+.wiztagram__header {
+  margin-bottom: 20px;
+}
+
 .photo-stream {
   display: grid;
   grid-template-columns: repeat(auto-fill, 1fr);
@@ -182,4 +190,7 @@ form {
 
 .photo-stream__new-comment-text {
   flex-basis: 100%;
+}
+
+.profile {
 }
