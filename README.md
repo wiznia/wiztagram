@@ -1,4 +1,4 @@
-An experimental app based on React.
+An experimental app based on React. [Live Link](https://wiztagram.netlify.com/)
 
 Ability to log in, log out, like or comment a photo.
 
