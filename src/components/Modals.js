@@ -23,7 +23,7 @@ class Modals extends React.Component {
           <Modal error={this.props.error} info={this.props.info} title="Login">
             <div className="close-modal" onClick={() => this.props.showModal('loginPopup')}>&times;</div>
             <form onSubmit={this.props.handleSubmit}>
-              <input className="input" type="text" placeholder="Enter your username" ref={this.props.loginEmail} />
+              <input className="input" type="text" placeholder="Enter your email" ref={this.props.loginEmail} />
               <input className="input" type="password" placeholder="Enter your password" ref={this.props.loginPassword} />
               <button className="button" type="button" onClick={this.props.showResetPassword}>Forgot your password?</button>
               <button className="button-modal" type="submit">Login</button>

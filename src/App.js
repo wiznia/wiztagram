@@ -130,7 +130,8 @@ class App extends Component {
     this.setState({
       app: {
         uid: null,
-        username: null
+        username: null,
+        user: null
       }
     });
   }
