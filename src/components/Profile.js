@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
+import Loader from './Loader';
 
 class Profile extends React.Component {
   emailRef = React.createRef();
@@ -22,25 +23,29 @@ class Profile extends React.Component {
 
   updatePhoto = (e) => {
     const selectedPic = e.currentTarget.files[0];
-    const folder = `${this.props.user.uid}/profilePicture/${selectedPic.name}`;
+    const folder = `${this.props.state.uid}/profilePicture/${selectedPic.name}`;
     const storageRef = firebase.storage().ref(folder);
 
-    storageRef.put(selectedPic);
-    firebase.storage()
-      .ref(folder)
-      .getDownloadURL()
-      .then(url => {
+    this.props.checkPic(true);
+
+    storageRef.put(selectedPic).then((pic) => {
+      storageRef.getDownloadURL().then(url => {
+        this.props.checkPic(false);
         this.props.showNewProfilePicture(url);
       });
+    });
   }
 
   render() {
-    const { username, user, email, uid } = this.props.state;
+    const { username, user, email, uid, picUploading } = this.props.state;
     return(
       <>
         { uid ? (
           <div className="profile">
             <div className="profile__photo">
+              { picUploading &&
+                <Loader />
+              }
               { user && user.photoURL ? (
                 <>
                   <input onChange={(e) => this.updatePhoto(e)} type="file" />

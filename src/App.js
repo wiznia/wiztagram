@@ -25,7 +25,8 @@ class App extends Component {
     },
     signupPopup: false,
     loginPopup: false,
-    resetPasswordPopup: false
+    resetPasswordPopup: false,
+    photoUploadPopup: false
   }
 
   addComment = (comment, key, username) => {
@@ -55,6 +56,14 @@ class App extends Component {
     this.setState({
       app: {
         photos
+      }
+    });
+  }
+
+  checkPic = (status) => {
+    this.setState({
+      app: {
+        picUploading: status
       }
     });
   }
@@ -299,6 +308,32 @@ class App extends Component {
     });
   }
 
+  uploadPhoto = (e, title, description, photo) => {
+    e.preventDefault();
+    const selectedPic = photo.current.files[0];
+    const folder = `photos/${selectedPic.name}`;
+    const storageRef = firebase.storage().ref(folder);
+    const photos = {...this.state.app.photos};
+    const photosLength = Object.keys(photos).length;
+
+    storageRef.put(selectedPic).then((pic) => {
+      storageRef.getDownloadURL().then(url => {
+        photos[`photo${parseInt(photosLength) + 1}`] = {
+          name: title,
+          desc: description,
+          likes: 0,
+          image: url 
+        }
+
+        this.setState({
+          app: {
+            photos
+          }
+        });
+      });
+    });
+  }
+
   componentDidMount() {
     this.ref = base.syncState('/app', {
       context: this,
@@ -336,7 +371,8 @@ class App extends Component {
               </React.Fragment>
               )
             }
-            <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} />
+            <button className="button" onClick={() => this.showModal('photoUploadPopup')}>Upload photo</button>
+            <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} photoUploadPopup={this.state.photoUploadPopup} uploadPhoto={this.uploadPhoto} />
           </header>
           <Switch>
             <Route exact path="/">
@@ -345,7 +381,7 @@ class App extends Component {
                   Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />) }
               </ul>
             </Route>
-            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} />}>
+            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} checkPic={this.checkPic} />}>
             </Route>
           </Switch>
         </div>

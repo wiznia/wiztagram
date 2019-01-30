@@ -2,10 +2,12 @@ import React from 'react';
 import Modal from './Modal';
 
 class Modals extends React.Component {
+  photoTitle = React.createRef();
+  photoDescription = React.createRef();
+  photoPic = React.createRef();
   render() {
-    const signupPopup = this.props.signupPopup;
-    const loginPopup = this.props.loginPopup;
-    const resetPasswordPopup = this.props.resetPasswordPopup;
+    const { signupPopup, loginPopup, resetPasswordPopup, photoUploadPopup } = this.props;
+
     return(
       <React.Fragment>
         { signupPopup &&
@@ -36,6 +38,17 @@ class Modals extends React.Component {
             <form onSubmit={(e) => this.props.resetPassword(e, this.props.resetPasswordEmail.current.value)}>
               <input className="input" type="email" required  placeholder="Enter your email" ref={this.props.resetPasswordEmail} />
               <button className="button-modal" type="submit">Reset password</button>
+            </form>
+          </Modal>
+        }
+        { photoUploadPopup &&
+          <Modal error={this.props.error} info={this.props.info} title="Upload photo">
+            <div className="close-modal" onClick={() => this.props.showModal('photoUploadPopup')}>&times;</div>
+            <form onSubmit={(e) => this.props.uploadPhoto(e, this.photoTitle.current.value, this.photoDescription.current.value, this.photoPic)}>
+              <input className="input" type="text" required  placeholder="Title" ref={this.photoTitle} />
+              <textarea className="input"  placeholder="Description" ref={this.photoDescription} />
+              <input type="file" ref={this.photoPic} />
+              <button className="button-modal" type="submit">Upload photo</button>
             </form>
           </Modal>
         }

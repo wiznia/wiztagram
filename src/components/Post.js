@@ -17,13 +17,21 @@ class Post extends React.Component {
     this.textareaRef.current.focus();
   }
 
-  componentDidUpdate() {
+  checkLikes = () => {
     if (this.props.details.liked) {
       const alreadyLiked = Object.keys(this.props.details.liked).filter(user => user === this.props.uid); 
       if (alreadyLiked.length > 0) {
         this.heartRef.current.classList.add('like_active');
       }
     }
+  }
+
+  componentDidUpdate() {
+    this.checkLikes();
+  }
+
+  componentDidMount() {
+    this.checkLikes();
   }
 
   render() {
