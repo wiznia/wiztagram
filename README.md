@@ -4,4 +4,4 @@ Ability to log in, log out, like or comment a photo.
 
 If logged in as admin (email: admin@admin.com pass: adminadmin) you can also delete any comment you like.
 
-Profile page WiP.
+Profile page lets you change your email, password, upload a profile picture and delete your account.
