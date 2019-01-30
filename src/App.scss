@@ -28,6 +28,30 @@ img {
   width: 100%;
 }
 
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &::before {
+    content: '';
+    background: rgba(255, 255, 255, .7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  p {
+    z-index: 2;
+    font: 40px/1 'Billabong', sans-serif;
+  }
+}
+
 .wiztagram {
   margin: 20px auto;
   padding: 0 20px;
@@ -59,6 +83,7 @@ form {
   font-weight: bold;
   color: #bf0000;
   margin-top: 10px;
+  flex-basis: 100%;
 }
 
 .info {
@@ -70,6 +95,21 @@ form {
   width: 100%;
   padding: 14px 7px;
   margin-bottom: 14px;
+}
+
+.input_small {
+  width: 250px;
+  margin: 0 10px 0 0;
+}
+
+.input-container {
+  margin-bottom: 10px;
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+  }
 }
 
 .modal {
@@ -193,4 +233,26 @@ form {
 }
 
 .profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
+
+.profile__photo {
+  cursor: pointer;
+  position: relative;
+  clip-path: circle(100px);
+  width: 200px;
+  height: 200px;
+  input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+.profile__info {
+  margin-left: 30px;
+}
+

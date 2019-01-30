@@ -19,7 +19,9 @@ class App extends Component {
     app: {
       uid: null,
       owner: null,
-      photos: samplePhotos
+      photos: samplePhotos,
+      user: null,
+      loading: true
     },
     signupPopup: false,
     loginPopup: false,
@@ -60,6 +62,7 @@ class App extends Component {
   authHandler = async (authData) => {
     const fullName = authData.user.displayName || this.fullName.current.value;
     const login = await base.fetch('/', { context: this });
+    const photoURL = authData.user.photoURL;
 
     // Sends email verification for new users only
     if (authData.additionalUserInfo.isNewUser) {
@@ -76,12 +79,12 @@ class App extends Component {
         }, 3000);
       });
     }
-    
+
     // Sets the username provided by the user on the sign in popup
     if (authData.operationType === 'signIn') {
       authData.user.updateProfile({
         displayName: fullName
-      }).then(() => {
+      }).then((res) => {
         this.setState({
           app: {
             username: fullName
@@ -100,7 +103,9 @@ class App extends Component {
     this.setState({
       app: {
         uid: authData.user.uid,
-        owner: login.app.owner || authData.user.uid
+        owner: login.app.owner || authData.user.uid,
+        email: authData.user.email,
+        photoURL
       }
     });
   }
@@ -202,14 +207,108 @@ class App extends Component {
       });
     }
     this.setState({
+      error: null,
+      info: null,
       [method]: !this.state[method]
+    });
+  }
+
+  updateEmail = (email) => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        user.updateEmail(email).then(() => {
+          this.setState({
+            info: `Your email address was updated. Your new email is ${email}`
+          });
+        }).catch((error) => {
+          this.setState({
+            error: error.message,
+            info: null
+          });
+        });
+      } else {
+        this.setState({
+          loginPopup: true,
+          info: 'Please log in again to save your new email address'
+        });
+      }
+    });
+  }
+
+  updatePassword = (password) => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        user.updatePassword(password).then(() => {
+          this.setState({
+            info: 'Your password was successfully updated.',
+            error: null
+          });
+        }).catch((error) => {
+          this.setState({
+            error: error.message,
+            info: null
+          });
+        });
+      } else {
+        this.setState({
+          loginPopup: true,
+          info: 'Please log in again to save your new password.'
+        });
+      }
+    });
+  }
+
+  deleteAccount = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        user.delete().then(() => {
+          this.logout();
+        }).catch((error) => {
+          console.log('fail');
+          this.setState({
+            error: error.message,
+            info: null,
+            loginPopup: true
+          });
+        });
+      }
+    });
+  }
+
+  showNewProfilePicture = (url) => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        firebase.auth().currentUser.updateProfile({
+          photoURL: url
+        }).then(() => {
+          const photoURL = user.photoURL;
+          this.setState({
+            app: {
+              user: {
+                photoURL
+              }
+            }
+          });
+        }).catch((error) => {
+          this.setState({
+            error: error.message
+          });
+        });
+      }
     });
   }
 
   componentDidMount() {
     this.ref = base.syncState('/app', {
       context: this,
-      state: 'app'
+      state: 'app',
+      then() {
+        this.setState({
+          app: {
+            loading: false
+          }
+        });
+      }
     });
   }
 
@@ -232,7 +331,7 @@ class App extends Component {
               ) : (
               <React.Fragment>
                 <Link to={`/profile/${profileId}`}><span className="username"><span className="button">My account</span></span></Link>
-                <button className="button" onClick={this.logout}>Logout</button>
+                <Link to="/"><button className="button" onClick={this.logout}>Logout</button></Link>
               </React.Fragment>
               )
             }
@@ -242,11 +341,10 @@ class App extends Component {
             <Route exact path="/">
               <ul className="photo-stream">
                 {
-                  Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />)
-                }
+                  Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />) }
               </ul>
             </Route>
-            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state}} />}>
+            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} />}>
             </Route>
           </Switch>
         </div>
