@@ -1,5 +1,5 @@
 const photos = {
-  photo1: {
+  photo01: {
     name: "Pacific Halibut",
     image: "/images/hali.jpg",
     desc:
@@ -9,7 +9,7 @@ const photos = {
     liked: {}
   },
 
-  photo2: {
+  photo02: {
     name: "Lobster",
     image: "/images/lobster.jpg",
     desc:
@@ -19,7 +19,7 @@ const photos = {
     liked: {}
   },
 
-  photo3: {
+  photo03: {
     name: "Sea Scallops",
     image: "/images/scallops.jpg",
     desc:
@@ -29,7 +29,7 @@ const photos = {
     liked: {}
   },
 
-  photo4: {
+  photo04: {
     name: "Mahi Mahi",
     image: "/images/mahi.jpg",
     desc:
@@ -39,7 +39,7 @@ const photos = {
     liked: {}
   },
 
-  photo5: {
+  photo05: {
     name: "King Crab",
     image: "/images/crab.jpg",
     desc:
@@ -49,7 +49,7 @@ const photos = {
     liked: {}
   },
 
-  photo6: {
+  photo06: {
     name: "Atlantic Salmon",
     image: "/images/salmon.jpg",
     desc:
@@ -59,7 +59,7 @@ const photos = {
     liked: {}
   },
 
-  photo7: {
+  photo07: {
     name: "Oysters",
     image: "/images/oysters.jpg",
     desc: "A soft plump oyster with a sweet salty flavor and a clean finish.",
@@ -68,7 +68,7 @@ const photos = {
     liked: {}
   },
 
-  photo8: {
+  photo08: {
     name: "Mussels",
     image: "/images/mussels.jpg",
     desc:
@@ -78,7 +78,7 @@ const photos = {
     liked: {}
   },
 
-  photo9: {
+  photo09: {
     name: "Jumbo Prawns",
     image: "/images/prawns.jpg",
     desc:

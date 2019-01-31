@@ -328,7 +328,8 @@ class App extends Component {
         this.setState({
           app: {
             photos
-          }
+          },
+          photoUploadPopup: false
         });
       });
     });
@@ -377,7 +378,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/">
               <ul className="photo-stream">
-                {
+                { this.state.app.photos &&
                   Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />) }
               </ul>
             </Route>

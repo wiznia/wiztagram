@@ -227,10 +227,13 @@ form {
 }
 
 .photo-stream {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 1fr);
-  grid-gap: 30px;
-  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column-reverse;
+  margin-top: 30px;
+  li + li {
+    margin-bottom: 30px;
+  }
 }
 
 .photo-stream__description {
