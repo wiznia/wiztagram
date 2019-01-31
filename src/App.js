@@ -7,6 +7,7 @@ import samplePhotos from './sample-photos';
 import Post from './components/Post';
 import Modals from './components/Modals';
 import Profile from './components/Profile';
+import badwords from 'bad-words';
 
 class App extends Component {
   fullName = React.createRef();
@@ -31,6 +32,7 @@ class App extends Component {
 
   addComment = (comment, key, username) => {
     const photos = {...this.state.app.photos};
+    const filter = new badwords();
     let timeStamp = (new Date()).getTime();
    
     if (!photos[key].comments) {
@@ -39,7 +41,7 @@ class App extends Component {
 
     photos[key].comments[`comment-id${timeStamp}`] = {
       user: username,
-      comment
+      comment: filter.clean(comment)
     };
 
     this.setState({
@@ -140,7 +142,8 @@ class App extends Component {
       app: {
         uid: null,
         username: null,
-        user: null
+        user: null,
+        email: null
       }
     });
   }
@@ -289,7 +292,9 @@ class App extends Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         firebase.auth().currentUser.updateProfile({
-          photoURL: url
+          user: {
+            photoURL: url
+          }
         }).then(() => {
           const photoURL = user.photoURL;
           this.setState({
