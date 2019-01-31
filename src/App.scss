@@ -66,6 +66,7 @@ img {
 }
 
 .button {
+  background: none;
   border: 0;
   font-size: 12px;
   font-weight: bold;
@@ -143,8 +144,12 @@ form {
 }
 
 .input_small {
-  width: 250px;
-  margin: 0 10px 0 0;
+  width: 100%;
+  margin: 0 10px 10px 0;
+  @media screen and (min-width: 768px) {
+    width: 250px;
+    margin-bottom: 0;
+  }
 }
 
 .input-container {
@@ -153,7 +158,10 @@ form {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 30px;
+    @media screen and (min-width: 768px) {
+      margin-top: 10px;
+    }
   }
 }
 
@@ -245,6 +253,7 @@ form {
 }
 
 .photo-stream__comment, .photo-stream__like {
+  background: none;
   border: 0;
   margin: 0 12px 10px 0;
   cursor: pointer;
@@ -280,9 +289,11 @@ form {
 }
 
 .profile {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  @media screen and (min-width: 768px) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 }
 
 .profile__photo {
@@ -291,6 +302,10 @@ form {
   clip-path: circle(100px);
   width: 200px;
   height: 200px;
+  margin: 15px auto;
+  @media screen and (min-width: 768px) {
+    margin: 0;
+  }
   input {
     position: absolute;
     width: 100%;
@@ -300,6 +315,10 @@ form {
 }
 
 .profile__info {
-  margin-left: 30px;
+  text-align: center;
+  @media screen and (min-width: 768px) {
+    margin-left: 30px;
+    text-align: left;
+  }
 }
 
