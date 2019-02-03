@@ -7,4 +7,5 @@ If logged in as admin (***email: admin@admin.com pass: adminadmin***) you can al
 Profile page lets you change your email, password, upload a profile picture and delete your account.
 
 *** **31/01/2019** *** Added curse words filter to comments . 
+
 *** **02/02/2019** *** Public and private profiles with number of posts, followers and following count
