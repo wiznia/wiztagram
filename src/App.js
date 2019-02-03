@@ -95,10 +95,17 @@ class App extends Component {
     if (authData.operationType === 'signIn') {
       authData.user.updateProfile({
         displayName: fullName
-      }).then((res) => {
+      }).then(() => {
+        // Adding a users database to firebase
         this.setState({
           app: {
-            username: fullName
+            username: fullName,
+            users: {
+              [authData.user.uid]: {
+                name: fullName,
+                photoURL: photoURL || ''
+              }
+            }
           }
         });
       });
@@ -313,7 +320,7 @@ class App extends Component {
     });
   }
 
-  uploadPhoto = (e, title, description, photo) => {
+  uploadPhoto = (e, title, description, photo, owner) => {
     e.preventDefault();
     const selectedPic = photo.current.files[0];
     const folder = `photos/${selectedPic.name}`;
@@ -327,7 +334,8 @@ class App extends Component {
           name: title,
           desc: description,
           likes: 0,
-          image: url 
+          image: url,
+          owner
         }
 
         this.setState({
@@ -337,6 +345,25 @@ class App extends Component {
           photoUploadPopup: false
         });
       });
+    });
+  }
+
+  followUnfollowUser = (userId) => {
+    const { users, uid, username } = this.state.app;
+
+    if (!users[userId].followers) {
+      users[userId]['followers'] = [];
+    }
+
+    if (!users[userId].followers[uid]) {
+      users[userId].followers[uid] = username;
+    } else {
+      users[userId].followers[uid] = null;
+    }
+    this.setState({
+      app: {
+        users
+      }
     });
   }
 
@@ -378,7 +405,7 @@ class App extends Component {
               )
             }
             <button className="button" onClick={() => this.showModal('photoUploadPopup')}>Upload photo</button>
-            <Modals error={this.state.error} info={this.state.info} showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} photoUploadPopup={this.state.photoUploadPopup} uploadPhoto={this.uploadPhoto} />
+            <Modals error={this.state.error} info={this.state.info} uid={this.state.app.uid}  showModal={this.showModal} handleSubmit={this.handleSubmit} signupPopup={this.state.signupPopup} loginPopup={this.state.loginPopup} resetPasswordPopup={this.state.resetPasswordPopup} showResetPassword={this.showResetPassword} fullName={this.fullName} signupEmail={this.signupEmail} signupPassword={this.signupPassword} loginEmail={this.loginEmail} loginPassword={this.loginPassword} resetPasswordEmail={this.resetPasswordEmail} resetPassword={this.resetPassword} photoUploadPopup={this.state.photoUploadPopup} uploadPhoto={this.uploadPhoto} />
           </header>
           <Switch>
             <Route exact path="/">
@@ -387,7 +414,7 @@ class App extends Component {
                   Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />) }
               </ul>
             </Route>
-            <Route path="/profile/:profileId" render={() => <Profile state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} checkPic={this.checkPic} />}>
+            <Route path="/profile/:profileId" render={(props) => <Profile {...props} state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} checkPic={this.checkPic} followUnfollowUser={this.followUnfollowUser} />}>
             </Route>
           </Switch>
         </div>

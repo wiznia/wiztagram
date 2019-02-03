@@ -44,7 +44,7 @@ class Modals extends React.Component {
         { photoUploadPopup &&
           <Modal error={this.props.error} info={this.props.info} title="Upload photo">
             <div className="close-modal" onClick={() => this.props.showModal('photoUploadPopup')}>&times;</div>
-            <form onSubmit={(e) => this.props.uploadPhoto(e, this.photoTitle.current.value, this.photoDescription.current.value, this.photoPic)}>
+            <form onSubmit={(e) => this.props.uploadPhoto(e, this.photoTitle.current.value, this.photoDescription.current.value, this.photoPic, this.props.uid)}>
               <input className="input" type="text" required  placeholder="Title" ref={this.photoTitle} />
               <textarea className="input"  placeholder="Description" ref={this.photoDescription} />
               <input type="file" ref={this.photoPic} />
