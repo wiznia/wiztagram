@@ -30,7 +30,7 @@ class App extends Component {
     photoUploadPopup: false
   }
 
-  addComment = (comment, key, username) => {
+  addComment = (comment, key, username, profileLink) => {
     const photos = {...this.state.app.photos};
     const filter = new badwords();
     let timeStamp = (new Date()).getTime();
@@ -41,6 +41,7 @@ class App extends Component {
 
     photos[key].comments[`comment-id${timeStamp}`] = {
       user: username,
+      profileLink,
       comment: filter.clean(comment)
     };
 
@@ -299,11 +300,10 @@ class App extends Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         firebase.auth().currentUser.updateProfile({
-          user: {
-            photoURL: url
-          }
+          photoURL: url
         }).then(() => {
           const photoURL = user.photoURL;
+          console.log(photoURL);
           this.setState({
             app: {
               user: {

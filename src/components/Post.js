@@ -9,7 +9,8 @@ class Post extends React.Component {
   addComment = (e) => {
     e.preventDefault();
     const username = this.props.username || 'Anonymous';
-    this.props.addComment(this.textareaRef.current.value, this.props.index, username);
+    const profileLink = this.props.username ? `/profile/${this.props.uid}/` : null;
+    this.props.addComment(this.textareaRef.current.value, this.props.index, username, profileLink);
     this.formRef.current.reset();
   }
 
@@ -58,7 +59,7 @@ class Post extends React.Component {
               Object.keys(comments).map(commentId => {
                 if (comments[commentId]) {
                   return(
-                    <NewComment key={commentId} comment={comments[commentId].comment} username={comments[commentId].user} removeComment={() => this.props.removeComment(commentId, this.props.index)} owner={this.props.owner} uid={this.props.uid} />
+                    <NewComment key={commentId} comment={comments[commentId].comment} username={comments[commentId].user} removeComment={() => this.props.removeComment(commentId, this.props.index)} owner={this.props.owner} uid={this.props.uid} profileLink={comments[commentId].profileLink} />
                   );
                 }
                 return null;

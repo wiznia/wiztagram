@@ -22,18 +22,20 @@ class Profile extends React.Component {
   }
 
   updatePhoto = (e) => {
-    const selectedPic = e.currentTarget.files[0];
-    const folder = `${this.props.state.uid}/profilePicture/${selectedPic.name}`;
-    const storageRef = firebase.storage().ref(folder);
+    if (e.currentTarget.files[0]) {
+      const selectedPic = e.currentTarget.files[0];
+      const folder = `${this.props.state.uid}/profilePicture/${selectedPic.name}`;
+      const storageRef = firebase.storage().ref(folder);
 
-    this.props.checkPic(true);
+      this.props.checkPic(true);
 
-    storageRef.put(selectedPic).then((pic) => {
-      storageRef.getDownloadURL().then(url => {
-        this.props.checkPic(false);
-        this.props.showNewProfilePicture(url);
+      storageRef.put(selectedPic).then((pic) => {
+        storageRef.getDownloadURL().then(url => {
+          this.props.checkPic(false);
+          this.props.showNewProfilePicture(url);
+        });
       });
-    });
+    }
   }
 
   renderOwnProfile = () => {
