@@ -1,10 +1,12 @@
 import React from 'react';
 import NewComment from './NewComment';
+import TagForm from './TagForm';
 
 class Post extends React.Component {
   formRef = React.createRef();
   textareaRef = React.createRef();
   heartRef = React.createRef();
+  imageRef = React.createRef();
 
   addComment = (e) => {
     e.preventDefault();
@@ -36,11 +38,17 @@ class Post extends React.Component {
   }
 
   render() {
-    const { image, name, desc, comments, likes } = this.props.details;
+    const { image, name, desc, comments, likes, tags } = this.props.details;
  
     return(
       <li className="photo-stream__item">
-        <img src={image} alt={name} />
+        <div className="photo-stream__image">
+          <img ref={this.imageRef} src={image} alt={name} onClick={(e) => this.props.renderTagForm(this.props.index, this.imageRef, e)} />
+          {
+            tags &&
+            <TagForm index={this.props.index} tags={tags} users={this.props.users} tagUser={this.props.tagUser} />
+          }
+        </div>
         <div className="photo-stream__bar">
           { this.props.uid &&
           <button className="photo-stream__like" onClick={() => this.props.likePhoto(this.props.index, likes, this.heartRef)}>
@@ -49,6 +57,9 @@ class Post extends React.Component {
           }
           <button className="photo-stream__comment" onClick={this.focusComment}>
             <svg width="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1536"><path d="M1672 318.5c-80-98.3-188.7-176-326-233S1058.7 0 896 0 583.3 28.5 446 85.5s-246 134.7-326 233C40 416.8 0 524 0 640c0 100 30.2 193.7 90.5 281s142.8 160.7 247.5 220c-7.3 26.7-16 52-26 76s-19 43.7-27 59-18.8 32.3-32.5 51-24 31.8-31 39.5-18.5 20.3-34.5 38-26.3 29.2-31 34.5l-8 9-7 8.5-6 9c-3.3 5-4.8 8.2-4.5 9.5s-.3 4.7-2 10-1.5 9.3.5 12v1c2.7 11.3 8 20.5 16 27.5s17 10.5 27 10.5h5c43.3-5.3 81.3-12.7 114-22 174.7-44.7 328-125.3 460-242 50 5.3 98.3 8 145 8 162.7 0 312.7-28.5 450-85.5s246-134.7 326-233S1792 756 1792 640s-40-223.2-120-321.5zM1559.5 895c-69.7 78.7-163.7 141.2-282 187.5S1032 1152 896 1152c-40.7 0-84-2.7-130-8l-57-6-43 38c-82 72-173.7 129-275 171 30.7-54 54-111.3 70-172l27-96-87-50c-86.7-49.3-153.8-107.8-201.5-175.5S128 714.7 128 640c0-91.3 34.8-176.3 104.5-255s163.7-141.2 282-187.5C632.8 151.2 760 128 896 128s263.2 23.2 381.5 69.5c118.3 46.3 212.3 108.8 282 187.5S1664 548.7 1664 640s-34.8 176.3-104.5 255z"/></svg>
+          </button>
+          <button className="button" onClick={() => this.props.tagPhoto(this.imageRef, this.props.index)}>
+            <svg width="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1515 1515"><path d="M1478 805L763 91c-25.3-25.3-59.3-46.8-102-64.5S579.3 0 544 0H128C93.3 0 63.3 12.7 38 38S0 93.3 0 128v416c0 35.3 8.8 74.3 26.5 117S65.7 737.3 91 762l715 716c24.7 24.7 54.7 37 90 37 34.7 0 65-12.3 91-37l491-492c24.7-24.7 37-54.7 37-90 0-34.7-12.3-65-37-91zM410.5 410.5c-25 25-55.2 37.5-90.5 37.5s-65.5-12.5-90.5-37.5S192 355.3 192 320s12.5-65.5 37.5-90.5S284.7 192 320 192s65.5 12.5 90.5 37.5S448 284.7 448 320s-12.5 65.5-37.5 90.5z"/></svg>
           </button>
           <div className="photo-stream__like-count">{likes} {likes === 1 ? 'like' : 'likes'}</div>
         </div>

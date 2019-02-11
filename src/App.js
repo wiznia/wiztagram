@@ -303,7 +303,6 @@ class App extends Component {
           photoURL: url
         }).then(() => {
           const photoURL = user.photoURL;
-          console.log(photoURL);
           this.setState({
             app: {
               user: {
@@ -348,6 +347,69 @@ class App extends Component {
     });
   }
 
+  tagPhoto = (photo, index) => {
+    const photoClass = photo.current.parentElement.classList;
+    const photoParent = photo.current.parentElement;
+
+    if (photoClass.value.includes('tagging')) {
+      photoParent.classList.remove('tagging');
+    } else {
+      photoParent.classList.add('tagging');
+    }
+  }
+
+  renderTagForm = (photoIndex, ref, e) => {
+    e.persist();
+    debugger;
+    ref.current.focus();
+    let offset = ref.current.parentElement.getBoundingClientRect();
+    let x = e.clientX - offset.left;
+    let y = e.clientY - offset.top;
+
+    if (ref.current.parentElement.classList.value.includes('tagging')) {
+      const photos = {...this.state.app.photos};
+      let timeStamp = (new Date()).getTime();
+
+      if (!photos[photoIndex].tags) {
+        photos[photoIndex]['tags'] = [];
+      }
+
+      // Filter the form currently being tagged to prevent multiple tagging before completing the tag action
+      const taggingActive = Object.keys(photos[photoIndex].tags).filter(tag => photos[photoIndex].tags[tag].tagging === true);
+
+      if (taggingActive.length === 0) {
+        photos[photoIndex]['tags'][timeStamp] = {
+          x,
+          y,
+          tagActive: false,
+          tagging: true
+        };
+
+        this.setState({
+          app: {
+            photos
+          }
+        });
+      }
+    }
+  }
+
+  tagUser = (user, tagIndex, index) => {
+    const photos = {...this.state.app.photos};
+
+    photos[index].tags[tagIndex] = {
+      tagActive: true,
+      tagging: false,
+      name: user
+    }
+
+    this.setState({
+      app: {
+        photos
+      }
+    });
+  }
+  
   followUnfollowUser = (userId) => {
     const { users, uid, username } = this.state.app;
 
@@ -411,7 +473,7 @@ class App extends Component {
             <Route exact path="/">
               <ul className="photo-stream">
                 { this.state.app.photos &&
-                  Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} username={this.state.app.username} />) }
+                  Object.keys(this.state.app.photos).map(post => <Post key={post} index={post} details={this.state.app.photos[post]} addComment={this.addComment} removeComment={this.removeComment} uid={this.state.app.uid} owner={this.state.app.owner} likePhoto={this.likePhoto} tagPhoto={this.tagPhoto} renderTagForm={this.renderTagForm} searchUsers={this.searchUsers} tagUser={this.tagUser} username={this.state.app.username} users={this.state.app.users} />) }
               </ul>
             </Route>
             <Route path="/profile/:profileId" render={(props) => <Profile {...props} state={{...this.state.app}} user={this.state.app.user} deleteAccount={this.deleteAccount} updateEmail={this.updateEmail} updatePassword={this.updatePassword} error={this.state.error} info={this.state.info} showNewProfilePicture={this.showNewProfilePicture} checkPic={this.checkPic} followUnfollowUser={this.followUnfollowUser} />}>
