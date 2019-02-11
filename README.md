@@ -9,3 +9,4 @@ Profile page lets you change your email, password, upload a profile picture and 
 *** **31/01/2019** *** Added curse words filter to comments. 
 
 *** **02/02/2019** *** Public and private profiles with number of posts, followers and following count.
+*** **11/02/2019** *** Tagging a photo ability added (WIP)
